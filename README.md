@@ -1,3 +1,10 @@
+# Samkhok DSS
+
+## dependencies
+```
+npm install @prisma/client prisma next-auth bcrypt
+npm install react-leaflet leaflet recharts
+```
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
