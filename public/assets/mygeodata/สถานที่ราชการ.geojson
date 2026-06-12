@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "name": "sthaanthiiraachkaar",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "Name": "สถานที่ราชการ" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [100.5446877, 14.0611897, 0.0],
+            [100.5353738, 14.0611897, 0.0],
+            [100.5353738, 14.047356, 0.0],
+            [100.5446877, 14.047356, 0.0],
+            [100.5446877, 14.0611897, 0.0]
+          ]
+        ]
+      }
+    }
+  ]
+}

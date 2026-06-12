@@ -1,16 +1,19 @@
 // app/map/page.tsx
-export default function MapPage() {
-  return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">แผนที่พื้นที่เสี่ยงอุทกภัย</h1>
+"use client";
 
-      <div className="bg-gray-300 h-96 flex items-center justify-center rounded">
-        🗺️ MAP MOCKUP
-      </div>
+import dynamic from "next/dynamic";
 
-      <p className="mt-3 text-sm text-gray-600">
-        * แสดงพื้นที่เสี่ยงสูง ปานกลาง และต่ำ
-      </p>
+// โหลด MapComponent แบบไดนามิกเพื่อป้องกันปัญหาเรื่อง 'window is not defined' ในส่วนของ SSR ของ Next.js
+const MapComponent = dynamic(() => import("./MapComponent"), {
+  ssr: false,
+  loading: () => (
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 text-slate-100">
+      <div className="animate-spin rounded-full h-10 w-10 border-4 border-slate-800 border-t-blue-500 mb-4"></div>
+      <p className="text-xs font-semibold tracking-wide text-slate-400">กำลังโหลดโมดูลแผนที่ภูมิสารสนเทศ (GIS)...</p>
     </div>
-  );
+  ),
+});
+
+export default function MapPage() {
+  return <MapComponent />;
 }

@@ -1,0 +1,40 @@
+{
+  "type": "FeatureCollection",
+  "name": "สถานที่ราชการ",
+  "crs": {
+    "type": "name",
+    "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ID_0",
+        "Name": "สถานที่ราชการ",
+        "description": null,
+        "timestamp": null,
+        "begin": null,
+        "end": null,
+        "altitudeMode": null,
+        "tessellate": null,
+        "extrude": null,
+        "visibility": -1,
+        "drawOrder": 1000,
+        "icon": "Layer0.png",
+        "snippet": ""
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [100.544687726346396, 14.06118967900483, 0.0],
+            [100.544687726346396, 14.04735596831771, 0.0],
+            [100.535373774515307, 14.04735596831771, 0.0],
+            [100.535373774515307, 14.06118967900483, 0.0],
+            [100.544687726346396, 14.06118967900483, 0.0]
+          ]
+        ]
+      }
+    }
+  ]
+}

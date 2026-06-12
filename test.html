@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบ DSS จัดการอุทกภัย - เทศบาลตำบลสามโคก</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f5f6fa;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .dss-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border-left: 5px solid #0984e3;
+            max-width: 400px;
+        }
+
+        .dss-header h1 {
+            margin: 0;
+            font-size: 18px;
+            color: #2d3436;
+        }
+
+        .dss-header p {
+            margin: 5px 0 0 0;
+            font-size: 13px;
+            color: #636e72;
+            line-height: 1.4;
+        }
+
+        .leaflet-control-layers {
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+            border-radius: 8px !important;
+            padding: 10px !important;
+            font-size: 13px !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dss-header">
+        <h1>ระบบสนับสนุนการตัดสินใจจัดการอุทกภัย</h1>
+        <p>เทศบาลตำบลสามโคก จังหวัดปทุมธานี<br>ระบบแสดงผลชั้นข้อมูลเชิงพื้นที่จากไฟล์ KMZ</p>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://unpkg.com/leaflet-kmz@latest/dist/leaflet-kmz.js"></script>
+
+    <script>
+        // พิกัดเริ่มต้นสามโคก
+        const samkhokCoords = [14.0543, 100.5222];
+
+        // 4. สร้างแผนที่
+        const map = L.map('map', {
+            center: samkhokCoords,
+            zoom: 13,
+            zoomControl: true
+        });
+
+        map.zoomControl.setPosition('bottomright');
+
+        // 5. แผนที่ฐาน
+        const openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            attribution: '© Google Maps'
+        });
+
+        // 6. แก้ไขจุดเกิด Error: เปลี่ยนมาใช้ "new L.KMZLayer()" ตามมาตรฐานของปลั๊กอินเวอร์ชันใหม่
+
+        // เลเยอร์ที่ 1: ขอบเขตเทศบาล
+        const layerBoundary = new L.KMZLayer();
+        layerBoundary.load('assets/kmz/ขอบเขตเทศบาล.kmz');
+        map.addLayer(layerBoundary); // สั่งเพิ่มลงแผนที่
+
+        // เลเยอร์ที่ 2: สถานที่ราชการ
+        const layerGovernment = new L.KMZLayer();
+        layerGovernment.load('assets/kmz/สถานที่ราชการ.kmz');
+        map.addLayer(layerGovernment);
+
+        // เลเยอร์ที่ 3: อาคาร
+        const layerBuildings = new L.KMZLayer();
+        layerBuildings.load('assets/kmz/อาคาร.kmz');
+        map.addLayer(layerBuildings);
+
+
+        // 7. เมนูควบคุมการเปิด-ปิดเลเยอร์
+        const baseMaps = {
+            "แผนที่ถนน (OpenStreetMap)": openStreetMap,
+            "แผนที่ดาวเทียม (Google Hybrid)": googleSatellite
+        };
+
+        const overlayMaps = {
+            "ขอบเขตเทศบาลตำบล": layerBoundary,
+            "สถานที่ราชการ": layerGovernment,
+            "อาคาร / สิ่งปลูกสร้าง": layerBuildings
+        };
+
+        L.control.layers(baseMaps, overlayMaps, { collapsed: false, position: 'topright' }).addTo(map);
+
+
+        // 8. ซูมเข้าหาข้อมูลขอบเขตเทศบาลอัตโนมัติเมื่อโหลดสำเร็จ
+        layerBoundary.on('load', function (e) {
+            console.log('โหลด KMZ ขอบเขตเทศบาลสำเร็จ');
+            // ตรวจสอบว่ามีข้อมูลภายในเลเยอร์เพื่อดึง Bounds มาซูม
+            // if (e.layer) {
+            //     map.fitBounds(e.layer.getBounds());
+            // }
+            // ดึงออบเจกต์แผนที่ภายในที่คำนวณเสร็จแล้วจาก target
+            const kmzLayerData = e.target;
+
+            // ตรวจสอบว่ามีฟังก์ชัน getBounds และได้ค่าที่ไม่ว่าง
+            if (kmzLayerData && typeof kmzLayerData.getBounds === 'function') {
+                const bounds = kmzLayerData.getBounds();
+                if (bounds.isValid()) { // เช็คความถูกต้องของพิกัดก่อนสั่งซูม
+                    map.fitBounds(bounds);
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
