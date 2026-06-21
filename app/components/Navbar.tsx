@@ -14,7 +14,8 @@ import {
   Droplet,
   ShieldAlert,
   Menu,
-  X
+  X,
+  History
 } from "lucide-react";
 import { getStoredData } from "../data/mockData";
 
@@ -25,6 +26,7 @@ const menus = [
   { name: "จัดลำดับความช่วยเหลือ", path: "/priority", icon: AlertTriangle },
   { name: "ศูนย์แจ้งเตือนภัย", path: "/alert", icon: Bell },
   { name: "รายงานผู้บริหาร", path: "/reports", icon: FileBarChart2 },
+  { name: "วิเคราะห์น้ำย้อนหลัง 10 ปี", path: "/historical", icon: History },
 ];
 
 interface NavbarProps {
